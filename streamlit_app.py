@@ -7,7 +7,6 @@ from inspect import signature as _sig
 
 import openai
 import streamlit as st
-from github import Github
 
 # Optional git integration (GitPython)
 try:

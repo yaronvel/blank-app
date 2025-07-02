@@ -134,3 +134,7 @@ if st.button("🧐 נתח את החדר", type="primary"):
             st.warning("🧹 החדר אינו מסודר. הצעות לשיפור:")
             for tip in data.get("suggestions", []):
                 st.markdown(f"- {tip}")
+            try:
+                Path("last_clean.txt").write_text(datetime.now().isoformat())
+            except Exception as e:
+                st.warning(f"⚠️ לא הצלחתי לכתוב לקובץ last_clean.txt: {e}")                  

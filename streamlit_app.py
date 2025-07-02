@@ -6,6 +6,7 @@ from pathlib import Path
 import openai
 import streamlit as st
 from inspect import signature as _sig
+from datetime import datetime
 
 # ------------------------------------------------------------
 # 🧹  Room Inspector — Streamlit Web App (v5)

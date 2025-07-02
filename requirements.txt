@@ -2,4 +2,3 @@ streamlit
 pathlib
 openai
 gitpython
-github

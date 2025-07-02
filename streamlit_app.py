@@ -7,6 +7,7 @@ from inspect import signature as _sig
 
 import openai
 import streamlit as st
+from github import Github
 
 # Optional git integration (GitPython)
 try:
@@ -73,8 +74,32 @@ latest_file = st.camera_input(
 def file_to_b64(data: bytes, mime: str) -> str:
     return f"data:{mime};base64,{base64.b64encode(data).decode()}"
 
+def write_file_to_github_api(content):
+    github_token = github_token
+    repository_name = "yaronvel/blank-app"
+    file_path_in_repo = "last_clean.txt"
+    commit_message = "Add file via GitHub API"
+
+    try:
+        g = Github(github_token)
+        user = "roompusher"
+        repo = user.get_repo(repository_name)
+
+        # Check if file exists to decide between update or create
+        try:
+            contents = repo.get_contents(file_path_in_repo, ref="main") # Assuming 'main' branch
+            repo.update_file(contents.path, commit_message, content, contents.sha, branch="main")
+            print(f"File '{file_path_in_repo}' updated on GitHub via API!")
+        except Exception: # File does not exist
+            repo.create_file(file_path_in_repo, commit_message, content, branch="main")
+            print(f"File '{file_path_in_repo}' created on GitHub via API!")
+
+    except Exception as e:
+        print(f"Error writing file to GitHub via API: {e}")
+
 
 def push_last_clean_to_github(timestamp: str):
+    return write_file_to_github_api(timestamp)
     """Commit & push last_clean.txt if Git token is available."""
     if not github_enabled:
         return

@@ -180,6 +180,11 @@ if st.button("🧐 נתח את החדר", type="primary"):
     # ---------- Present results & Git push -------------------
     if not data.get("same_room", False):
         st.error("❗ נראה כי אלו אינם אותו חדר.")
+        timestamp = datetime.now().isoformat()
+        try:
+            push_last_clean_to_github(timestamp + "NOT the same room")
+        except Exception as e:
+            st.warning(f"⚠️ לא הצלחתי לעדכן last_clean.txt: {e}")         
     else:
         if data.get("is_clean", False):
             st.success("✅ החדר נראה מסודר ונקי — כל הכבוד!")

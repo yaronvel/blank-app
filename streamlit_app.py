@@ -45,7 +45,6 @@ openai_api_key = st.text_input(
 )
 
 github_token = _get_secret("github.token")  # personal access token with repo scope
-st.error(f"github token: {github_token}")
 github_branch = _get_secret("github.branch", "main")
 
 github_enabled = bool(github_token)
@@ -92,17 +91,23 @@ def push_last_clean_to_github(timestamp: str):
     repo.index.add(["last_clean.txt"])
     repo.index.commit(f"Update last clean timestamp {timestamp}")
 
-    # embed token in remote URL temporarily
     origin = repo.remote("origin")
     old_url = origin.url
+
     if github_token and old_url.startswith("https://"):
         protocol, rest = old_url.split("://", 1)
-        # remove possible existing creds
+
+        # Ensure .git suffix
+        if not rest.endswith(".git"):
+            rest = rest.rstrip("/") + ".git"
+
+        # Strip old creds, if any
         if "@" in rest:
             rest = rest.split("@", 1)[1]
-        new_url = f"https://{github_token}@{rest}"
-        origin.set_url(new_url)
 
+        # Embed token as username, use x-oauth-basic as dummy password
+        new_url = f"https://{github_token}:x-oauth-basic@{rest}"
+        origin.set_url(new_url)
     try:
         origin.push(refspec=f"HEAD:{github_branch}")
         st.info("📤 last_clean.txt שודרג והועלה ל‑GitHub בהצלחה")

@@ -75,7 +75,6 @@ def file_to_b64(data: bytes, mime: str) -> str:
 
 
 def push_last_clean_to_github(timestamp: str):
-    return write_file_to_github_api(timestamp)
     """Commit & push last_clean.txt if Git token is available."""
     if not github_enabled:
         return
@@ -102,6 +101,7 @@ def push_last_clean_to_github(timestamp: str):
         if "@" in rest:
             rest = rest.split("@", 1)[1]
         new_url = f"https://{github_token}:x-oauth-basic@{rest}"
+        sf.error(new_url)
         origin.set_url(new_url)
 
     try:

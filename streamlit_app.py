@@ -45,6 +45,7 @@ openai_api_key = st.text_input(
 )
 
 github_token = _get_secret("github.token")  # personal access token with repo scope
+st.error(f"github token: {github_token}")
 github_branch = _get_secret("github.branch", "main")
 
 github_enabled = bool(github_token)

@@ -131,6 +131,8 @@ if st.button("🧐 נתח את החדר", type="primary"):
     system_prompt = (
         "You are an expert interior organiser.\n"
         "Compare the two images.\n"
+        "A room is not clean if there is a blanket on the floor\n",
+        "When checking if the same room, make sure the picture shows the same furnitures\n",
         "Respond ONLY with valid JSON: \n"
         "{\n"
         "  \"same_room\": true|false,\n"

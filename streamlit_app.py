@@ -101,7 +101,6 @@ def push_last_clean_to_github(timestamp: str):
         if "@" in rest:
             rest = rest.split("@", 1)[1]
         new_url = f"https://{github_token}:x-oauth-basic@{rest}"
-        st.error(new_url)
         origin.set_url(new_url)
 
     try:

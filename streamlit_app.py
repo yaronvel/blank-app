@@ -26,7 +26,7 @@ except ImportError:
 # ------------------------------------------------------------
 
 st.set_page_config(page_title="Room Inspector", page_icon="🧹", layout="centered")
-st.title("🧹 Room Inspector v0.0.2")
+st.title("🧹 Room Inspector v0.0.3")
 
 # ---------- Secrets / ENV -----------------------------------
 def _get_secret(path: str, default: str = ""):
@@ -142,7 +142,7 @@ if st.button("🧐 נתח את החדר", type="primary"):
         "{\n"
         "  \"same_room\": true|false,\n"
         "  \"is_clean\": true|false,\n"
-        "  \"narrow_photo\": true|false,  # if the latest photo is too narrow\n"
+        "  \"is_narrow_photo\": true|false,  # if the latest photo is too narrow\n"
         "  \"suggestions\": [\"tip 1\", \"tip 2\"]\n"
         "}\n"
         "If is_clean is true, suggestions may be an empty array.\n"
@@ -193,7 +193,7 @@ if st.button("🧐 נתח את החדר", type="primary"):
     if not data.get("same_room", False):
         st.error("❗ נראה כי אלו אינם אותו חדר.")
         file_name += "_diff_room"
-    elif not data.get("narrow_photo", False):
+    elif not data.get("is_narrow_photo", False):
         st.error("❗ התמונה צרה מדי.")
         file_name += "_to_narrow_pic"
 

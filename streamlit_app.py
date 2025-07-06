@@ -25,7 +25,7 @@ except ImportError:
 #   requirements.txt should now include: gitpython
 # ------------------------------------------------------------
 
-st.set_page_config(page_title="Room Inspector", page_icon="🧹", layout="centered")
+st.set_page_config(page_title="Room Inspector v0.1", page_icon="🧹", layout="centered")
 st.title("🧹 Room Inspector")
 
 # ---------- Secrets / ENV -----------------------------------
@@ -193,9 +193,9 @@ if st.button("🧐 נתח את החדר", type="primary"):
     if not data.get("same_room", False):
         st.error("❗ נראה כי אלו אינם אותו חדר.")
         file_name += "_diff_room"
-    if not data.get("narrow_photo", False):
+    elif not data.get("narrow_photo", False):
         st.error("❗ התמונה צרה מדי.")
-        file_name += "_diff_room"
+        file_name += "_to_narrow_pic"
 
         
     else:

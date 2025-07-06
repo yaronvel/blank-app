@@ -74,7 +74,7 @@ def file_to_b64(data: bytes, mime: str) -> str:
     return f"data:{mime};base64,{base64.b64encode(data).decode()}"
 
 
-def push_last_clean_to_github(timestamp: str):
+def push_last_clean_to_github(files):
     """Commit & push last_clean.txt if Git token is available."""
     if not github_enabled:
         return
@@ -88,8 +88,8 @@ def push_last_clean_to_github(timestamp: str):
         return
 
     # write timestamp file (already done by caller) and commit
-    repo.index.add(["last_clean.txt"])
-    repo.index.commit(f"Update last clean timestamp {timestamp}")
+    repo.index.add(files)
+    repo.index.commit(f"Update")
 
     # embed token in remote URL temporarily
     origin = repo.remote("origin")
@@ -181,20 +181,33 @@ if st.button("🧐 נתח את החדר", type="primary"):
             st.stop()
 
     # ---------- Present results & Git push -------------------
+    timestamp = datetime.now().isoformat()
+    file_name = timestamp
+    clean = False
     if not data.get("same_room", False):
         st.error("❗ נראה כי אלו אינם אותו חדר.")
-
-        timestamp = datetime.now().isoformat()
+        file_name += "_diff_room"
     else:
         if data.get("is_clean", False):
             st.success("✅ החדר נראה מסודר ונקי — כל הכבוד!")
-            timestamp = datetime.now().isoformat()
+            file_name += "_clean"
             try:
                 Path("last_clean.txt").write_text(timestamp)
-                push_last_clean_to_github(timestamp)
+                clean = True
+                #push_last_clean_to_github(timestamp, ["last_clean.txt"])
             except Exception as e:
                 st.warning(f"⚠️ לא הצלחתי לעדכן last_clean.txt: {e}")
         else:
             st.warning("🧹 החדר אינו מסודר. הצעות לשיפור:")
+            file_name += "not_clean"
             for tip in data.get("suggestions", []):
                 st.markdown(f"- {tip}")
+
+    file_name += ".jpg"
+    # Save to disk
+    with open(file_name, "wb") as f:
+        f.write(latest_file.getvalue())
+    files_to_push = [file_name]
+    if clean:
+        files_to_push.append("last_clean.txt")
+    push_last_clean_to_github(files_to_push)

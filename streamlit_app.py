@@ -26,7 +26,7 @@ except ImportError:
 # ------------------------------------------------------------
 
 st.set_page_config(page_title="Room Inspector", page_icon="🧹", layout="centered")
-st.title("🧹 Room Inspector v0.0.5")
+st.title("🧹 Room Inspector v0.0.6")
 
 # ---------- Secrets / ENV -----------------------------------
 def _get_secret(path: str, default: str = ""):
@@ -143,8 +143,9 @@ if st.button("🧐 נתח את החדר", type="primary"):
         "  \"same_room\": true|false,\n"
         "  \"is_clean\": true|false,\n"
         "  \"is_narrow_photo\": true|false,  # if the latest photo is too narrow\n"
-        "  \"suggestions\": [\"tip 1\", \"tip 2\", \"tip 3\"]\n"
+        "  \"suggestions\": [\"tip 1\", \"tip 2\"]\n"
         "}\n"
+        "If the picture is too narrow, you must return is_narrow_photo as true.\n"
         "If is_clean is true, suggestions may be an empty array.\n"
         "If is_clean is false, suggestions MUST be written in HEBREW."
     )

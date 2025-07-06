@@ -105,7 +105,7 @@ def push_last_clean_to_github(files):
 
     try:
         origin.push(f"HEAD:{github_branch}")
-        st.info("📤 last_clean.txt שודרג והועלה ל‑GitHub בהצלחה")
+        st.info("📤 הניסיון הועלה לגיטהאב")
     except Exception as e:
         st.warning(f"⚠️ שגיאה בעת הדחיפה ל‑GitHub: {e}")
     finally:

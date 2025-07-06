@@ -25,8 +25,8 @@ except ImportError:
 #   requirements.txt should now include: gitpython
 # ------------------------------------------------------------
 
-st.set_page_config(page_title="Room Inspector v0.1", page_icon="🧹", layout="centered")
-st.title("🧹 Room Inspector")
+st.set_page_config(page_title="Room Inspector", page_icon="🧹", layout="centered")
+st.title("🧹 Room Inspector v0.0.2")
 
 # ---------- Secrets / ENV -----------------------------------
 def _get_secret(path: str, default: str = ""):
@@ -136,7 +136,7 @@ if st.button("🧐 נתח את החדר", type="primary"):
         "Compare the two images.\n"
         "A room is not clean if there is a blanket on the floor\n",
         "When checking if the same room, make sure the picture shows the same furnitures\n",
-        "If the picutre is too narrow, you must comment about it.\n",
+        "If the picutre is too narrow, you must comment about it, and return narrow_photo as true.\n",
         "A picture is more narrow if it covers less area than the reference picutre.\n",
         "Respond ONLY with valid JSON: \n"
         "{\n"

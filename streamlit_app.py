@@ -136,10 +136,13 @@ if st.button("🧐 נתח את החדר", type="primary"):
         "Compare the two images.\n"
         "A room is not clean if there is a blanket on the floor\n",
         "When checking if the same room, make sure the picture shows the same furnitures\n",
+        "If the picutre is too narrow, you must comment about it.\n",
+        "A picture is more narrow if it covers less area than the reference picutre.\n",
         "Respond ONLY with valid JSON: \n"
         "{\n"
         "  \"same_room\": true|false,\n"
         "  \"is_clean\": true|false,\n"
+        "  \"narrow_photo\": true|false,  # if the latest photo is too narrow\n"
         "  \"suggestions\": [\"tip 1\", \"tip 2\"]\n"
         "}\n"
         "If is_clean is true, suggestions may be an empty array.\n"
@@ -190,6 +193,11 @@ if st.button("🧐 נתח את החדר", type="primary"):
     if not data.get("same_room", False):
         st.error("❗ נראה כי אלו אינם אותו חדר.")
         file_name += "_diff_room"
+    if not data.get("narrow_photo", False):
+        st.error("❗ התמונה צרה מדי.")
+        file_name += "_diff_room"
+
+        
     else:
         if data.get("is_clean", False):
             st.success("✅ החדר נראה מסודר ונקי — כל הכבוד!")

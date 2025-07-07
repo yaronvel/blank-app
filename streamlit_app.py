@@ -264,22 +264,6 @@ if st.button("🧐 נתח את החדר", type="primary"):
             st.error(f"שגיאת OpenAI: {e}")
             st.stop()
 
-    '''
-    gemini_answer = None
-    with st.spinner("שולח בקשה ל‑Gemini ..."):
-        try:
-            gemini_answer = compare_rooms_in_with_gemini(gemini_api_key, ref_b64, latest_b64)
-        except json.JSONDecodeError:
-            st.error("❌ לא הצלחתי לנתח את תגובת GEMINI (JSON שגוי).")
-            st.text(content)
-            st.stop()
-        except Exception as e:
-            st.error(f"שגיאת GEMINI: {e}")
-            st.stop()
-
-    st.error(gemini_answer)
-    '''     
-
     # ---------- Present results & Git push -------------------
     timestamp = datetime.now().isoformat()
     file_name = timestamp

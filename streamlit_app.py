@@ -4,6 +4,9 @@ import json
 from pathlib import Path
 from datetime import datetime
 from inspect import signature as _sig
+import PIL.Image
+import base64
+from io import BytesIO
 
 import openai
 import streamlit as st
@@ -26,7 +29,7 @@ except ImportError:
 # ------------------------------------------------------------
 
 st.set_page_config(page_title="Room Inspector", page_icon="🧹", layout="centered")
-st.title("🧹 Room Inspector v0.0.7")
+st.title("🧹 Room Inspector v0.0.8")
 
 # ---------- Secrets / ENV -----------------------------------
 def _get_secret(path: str, default: str = ""):
@@ -42,6 +45,10 @@ def _get_secret(path: str, default: str = ""):
 
 openai_api_key = st.text_input(
     "🔑 OpenAI API Key", type="password", value=_get_secret("openai.api_key")
+)
+
+gemini_api_key = st.text_input(
+    "🔑 Gemini API Key", type="password", value=_get_secret("gemini.api_key")
 )
 
 github_token = _get_secret("github.token")  # personal access token with repo scope
@@ -113,12 +120,80 @@ def push_last_clean_to_github(files):
         if github_token and old_url:
             origin.set_url(old_url)
 
+def compare_rooms_in_with_gemini(api_key: str, reference_image_b64, new_image_b64) -> dict:
+    """
+    Compares two images using the Gemini API and returns a structured JSON response.
+    This version is adapted to take image data from Streamlit widgets.
+
+    Args:
+        api_key: The user's Google AI API key.
+        reference_image_data: The image data for the reference image.
+        new_image_data: The image data for the new image.
+
+    Returns:
+        A dictionary containing the analysis from the Gemini API.
+    """
+    try:
+        # Configure the generative AI client with the API key
+        genai.configure(api_key=api_key)
+
+        # Load the images from the image data
+        decoded_bytes = base64.b64decode(reference_image_b64)
+        reference_img = PIL.Image.open(BytesIO(decoded_bytes))
+
+        decoded_bytes = base64.b64decode(new_image_b64)
+        new_img = PIL.Image.open(BytesIO(decoded_bytes))
+
+        new_img = PIL.Image.open(new_image_data)
+
+        # Initialize the generative model
+        model = genai.GenerativeModel('gemini-2.5-flash-latest')
+
+        # The prompt asking for a JSON response.
+        prompt = """
+        Analyze the two images. The first is a reference, the second is a new picture.
+        Respond ONLY with a JSON object in the following format. Do not include any other text or markdown formatting.
+
+        {
+          "is_the_same_room": <boolean>,
+          "is_clean": <boolean>,
+          "is_picture_wide_enough": <boolean>,
+          "differences": "<A string describing the differences between the two images.>",
+          "suggestions_hebrew": "<A string with suggestions in Hebrew. If the room is messy, suggest how to clean it. If the photo is cropped, suggest how to take a wider photo. If no suggestions are needed, leave this as an empty string.>"
+        }
+
+        Based on the images, determine the values for the JSON fields.
+        - `is_the_same_room`: true if they depict the same room, otherwise false.
+        - `is_clean`: true if the new picture shows a tidy room, otherwise false.
+        - `is_picture_wide_enough`: true if the new picture captures the room well, false if it seems too cropped.
+        """
+
+        # Send the prompt and the images to the model
+        response = model.generate_content([prompt, reference_img, new_img])
+
+        # Clean up the response to ensure it's valid JSON.
+        cleaned_response_text = response.text.strip().replace("```json", "").replace("```", "")
+        
+        # Parse the JSON string into a Python dictionary
+        json_response = json.loads(cleaned_response_text)
+        return json_response
+
+    except json.JSONDecodeError:
+        return {"error": "Failed to decode JSON from the API response.", "raw_response": response.text}
+    except Exception as e:
+        return {"error": f"An unexpected error occurred: {e}"}
+
 # ---------- Analyse button ----------------------------------
 if st.button("🧐 נתח את החדר", type="primary"):
 
     if not openai_api_key:
         st.error("יש להזין מפתח API של OpenAI.")
         st.stop()
+
+    if not gemini_api_key:
+        st.error("יש להזין מפתח API של Gemini.")
+        st.stop()
+
     if latest_file is None:
         st.error("צלם תמונה חדשה של החדר תחילה.")
         st.stop()
@@ -187,6 +262,21 @@ if st.button("🧐 נתח את החדר", type="primary"):
         except Exception as e:
             st.error(f"שגיאת OpenAI: {e}")
             st.stop()
+
+    gemini_answer = None
+    with st.spinner("שולח בקשה ל‑Gemini ..."):
+        try:
+            gemini_answer = compare_rooms_in_with_gemini(gemini_api_key, ref_b64, latest_b64)
+        except json.JSONDecodeError:
+            st.error("❌ לא הצלחתי לנתח את תגובת GEMINI (JSON שגוי).")
+            st.text(content)
+            st.stop()
+        except Exception as e:
+            st.error(f"שגיאת GEMINI: {e}")
+            st.stop()
+
+    st.error(gemini_answer)
+            
 
     # ---------- Present results & Git push -------------------
     timestamp = datetime.now().isoformat()

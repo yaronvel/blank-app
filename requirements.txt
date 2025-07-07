@@ -3,3 +3,4 @@ pathlib
 openai
 gitpython
 google-generativeai
+Pillow

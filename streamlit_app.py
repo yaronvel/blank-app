@@ -264,6 +264,7 @@ if st.button("🧐 נתח את החדר", type="primary"):
             st.error(f"שגיאת OpenAI: {e}")
             st.stop()
 
+    '''
     gemini_answer = None
     with st.spinner("שולח בקשה ל‑Gemini ..."):
         try:
@@ -277,7 +278,7 @@ if st.button("🧐 נתח את החדר", type="primary"):
             st.stop()
 
     st.error(gemini_answer)
-            
+    '''     
 
     # ---------- Present results & Git push -------------------
     timestamp = datetime.now().isoformat()
@@ -286,7 +287,7 @@ if st.button("🧐 נתח את החדר", type="primary"):
     if not data.get("same_room", False):
         st.error("❗ נראה כי אלו אינם אותו חדר.")
         file_name += "_diff_room"
-    elif not data.get("is_narrow_photo", False):
+    elif not data.get("is_narrow_photo", True):
         st.error("❗ התמונה צרה מדי.")
         file_name += "_to_narrow_pic"
 

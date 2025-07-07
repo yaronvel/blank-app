@@ -7,6 +7,7 @@ from inspect import signature as _sig
 import PIL.Image
 import base64
 from io import BytesIO
+import google.generativeai as genai
 
 import openai
 import streamlit as st
@@ -29,7 +30,7 @@ except ImportError:
 # ------------------------------------------------------------
 
 st.set_page_config(page_title="Room Inspector", page_icon="🧹", layout="centered")
-st.title("🧹 Room Inspector v0.0.8")
+st.title("🧹 Room Inspector v0.0.9")
 
 # ---------- Secrets / ENV -----------------------------------
 def _get_secret(path: str, default: str = ""):

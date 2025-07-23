@@ -213,7 +213,7 @@ if st.button("🧐 נתח את החדר", type="primary"):
         "A room is not clean if there is a blanket on the floor\n",
         "When checking if the same room, make sure the picture shows the same furnitures\n",
         "If the picutre is too narrow, you must comment about it, and return is_narrow_photo as true.\n",
-        "A picture is more narrow if it covers less area than the reference picutre.\n",
+        "A picture is more narrow if it covers less area than the reference picutre. It must include at least two corners of the room.\n",
         "Respond ONLY with valid JSON: \n"
         "{\n"
         "  \"same_room\": true|false,\n"

@@ -208,7 +208,7 @@ if st.button("🧐 נתח את החדר", type="primary"):
         "You are an expert interior organiser.\n"
         "You check if a kid's room is clean or not by comparing two images.\n"
         "The kid will try to fool you by taking a photo of a different room or by hiding the mess.\n"
-        "It will also try to take a very narrow photo of the room, so you must check that the photo shows big part of the room.\n"
+        "It might try to take a very narrow photo of the room, so you must check that the photo shows the bad and the floor.\n"
         "Compare the two images.\n"
         "A room is not clean if there is a blanket on the floor\n",
         "When checking if the same room, make sure the picture shows the same furnitures\n",

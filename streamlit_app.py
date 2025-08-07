@@ -30,7 +30,7 @@ except ImportError:
 # ------------------------------------------------------------
 
 st.set_page_config(page_title="Room Inspector", page_icon="🧹", layout="centered")
-st.title("🧹 Room Inspector v0.0.11")
+st.title("🧹 Room Inspector v0.0.12")
 
 # ---------- Secrets / ENV -----------------------------------
 def _get_secret(path: str, default: str = ""):
@@ -208,21 +208,15 @@ if st.button("🧐 נתח את החדר", type="primary"):
         "You are an expert interior organiser.\n"
         "You check if a kid's room is clean or not by comparing two images.\n"
         "The kid will try to fool you by taking a photo of a different room or by hiding the mess.\n"
-        "It might try to take a very narrow photo of the room.\n"
         "Compare the two images.\n"
         "A room is not clean if there is a blanket on the floor\n",
         "When checking if the same room, make sure the picture shows the same furnitures\n",
-        "If the picutre is too narrow, you must comment about it, and return is_too_narrow_photo as true.\n",
-        "A picture is too narrow if it does not show the bed and big part of the floor, otherwise, is_too_narrow_photo must be false.\n",
         "Respond ONLY with valid JSON: \n"
         "{\n"
         "  \"same_room\": true|false,\n"
         "  \"is_clean\": true|false,\n"
-        "  \"is_too_narrow_photo\": true|false,  # if the latest photo is too narrow\n"
         "  \"suggestions\": [\"tip 1\", \"tip 2\"]\n"
         "}\n"
-        "If the picture is too narrow, you must return is_too_narrow_photo as true and is_clean as false.\n",
-        "If the picture covers less area than than the reference picture, you must return is_too_narrow_photo as true.\n",        
         "If is_clean is true, suggestions may be an empty array.\n",
         "If is_clean is false, suggestions MUST be written in HEBREW."
     )
@@ -271,10 +265,6 @@ if st.button("🧐 נתח את החדר", type="primary"):
     if not data.get("same_room", False):
         st.error("❗ נראה כי אלו אינם אותו חדר.")
         file_name += "_diff_room"
-    elif not data.get("is_too_narrow_photo", True):
-        st.error("❗ התמונה צרה מדי.")
-        file_name += "_to_narrow_pic"
-
         
     else:
         if data.get("is_clean", False):

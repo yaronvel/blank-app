@@ -30,7 +30,7 @@ except ImportError:
 # ------------------------------------------------------------
 
 st.set_page_config(page_title="Room Inspector", page_icon="🧹", layout="centered")
-st.title("🧹 Room Inspector v0.0.10")
+st.title("🧹 Room Inspector v0.0.11")
 
 # ---------- Secrets / ENV -----------------------------------
 def _get_secret(path: str, default: str = ""):
@@ -213,7 +213,7 @@ if st.button("🧐 נתח את החדר", type="primary"):
         "A room is not clean if there is a blanket on the floor\n",
         "When checking if the same room, make sure the picture shows the same furnitures\n",
         "If the picutre is too narrow, you must comment about it, and return is_too_narrow_photo as true.\n",
-        "A picture is too narrow if it does not show the bed and big part of the floor.\n",
+        "A picture is too narrow if it does not show the bed and big part of the floor, otherwise, is_too_narrow_photo must be false.\n",
         "Respond ONLY with valid JSON: \n"
         "{\n"
         "  \"same_room\": true|false,\n"
